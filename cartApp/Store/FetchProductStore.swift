@@ -15,12 +15,12 @@ class FetchProductStore {
         ///
         /// - Parameters:
         ///        - callback: A callback  with the parameters `result` having the data and `error` which is a ServerError object.
-        func getProducts(callback:@escaping (_ result: Product?, _ error:ServerError?) -> Void) {
+        func getProducts(callback:@escaping (_ result: AllProducts?, _ error:ServerError?) -> Void) {
             networkService.get(withBaseURL: NetworkConstants.productsAPI) {
                 (result, error) in
                 let decoder = JSONDecoder()
                 if error == nil {
-                    if let resultData = result, let decodedData = try? decoder.decode(Product.self, from: resultData) {
+                    if let resultData = result, let decodedData = try? decoder.decode(AllProducts.self, from: resultData) {
                         callback(decodedData, nil)
                     } else {
                         callback(nil, CommonUtils.sharedInstance.defaultError())

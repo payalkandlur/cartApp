@@ -15,7 +15,7 @@ class FetchProductManager {
         ///
         /// - Parameters:
         ///        - callback: A callback  with the parameters `result` having the data and `error` which is a ServerError object.
-        func getProducts(callback:@escaping (_ result:Product?, _ error:ServerError?) -> Void) {
+        func getProducts(callback:@escaping (_ result:AllProducts?, _ error:ServerError?) -> Void) {
             productStore.getProducts() {
                 (result, error) in
                 if error == nil {
