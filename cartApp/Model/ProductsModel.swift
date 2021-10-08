@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Realm
+import RealmSwift
 
 // MARK: - AllProducts
 struct AllProducts: Codable {
@@ -17,14 +19,17 @@ enum ProductKeys: String, CodingKey {
     case name, price, image_url, rating
 }
 
-struct Product: Codable {
-    let name, price: String?
-    let image_url: String?
-    let rating: Int?
-}
-
-extension Product {
-    init(from decoder: Decoder) throws {
+@objcMembers class Product: Object, Codable {
+    dynamic var name, price: String?
+    dynamic var image_url: String?
+    dynamic var rating: Int?
+    
+    required override init() {
+        super.init()
+    }
+    
+    required init(from decoder: Decoder) throws {
+        super.init()
         let container = try decoder.container(keyedBy: ProductKeys.self)
         name = try? container.decodeIfPresent(String.self, forKey: .name)
         price = try? container.decodeIfPresent(String.self, forKey: .price)
@@ -32,4 +37,3 @@ extension Product {
         rating = try? container.decodeIfPresent(Int.self, forKey: .rating)
     }
 }
-

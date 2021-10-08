@@ -15,16 +15,14 @@ class ProductTableViewCell: UITableViewCell {
     @IBOutlet weak var priceLabel: UILabel!
     @IBOutlet weak var ratingLabel: UILabel!
     @IBOutlet weak var imgView: UIImageView!
+    @IBOutlet weak var addToCart: UIButton!
+    
+    fileprivate var addProductAction: (() -> Void)?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         self.applyTheme()
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
     
     func applyTheme() {
@@ -34,5 +32,16 @@ class ProductTableViewCell: UITableViewCell {
         self.cardView.layer.shadowColor = UIColor.gray.cgColor
         self.cardView.layer.shadowOpacity = 0.5
         self.cardView.layer.shadowOffset = CGSize(width: 2, height: 2)
+        self.addToCart.layer.cornerRadius = 10
+    }
+    
+    @IBAction func addToCartTapped(_ sender: Any) {
+        if let function = addProductAction {
+            function()
+        }
+    }
+    
+    func addProductActionType(callBackFunc:@escaping (() -> Void)) {
+        addProductAction = callBackFunc
     }
 }

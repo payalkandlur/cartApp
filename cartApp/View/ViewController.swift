@@ -6,11 +6,18 @@
 //
 
 import UIKit
+import CoreData
+import Realm
+import RealmSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var greaterBtn: UIButton!
+    @IBOutlet weak var lesserBtn: UIButton!
     var viewModel = ProductViewModel()
+    var products: [NSManagedObject] = []
+    var array : [Product]?
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -20,11 +27,33 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.registerViewModelListeners()
         
     }
+    @IBAction func greaterThanTapped(_ sender: Any) {
+        viewModel.sortGreater()
+        array = viewModel.filteredList
+        tableView.reloadData()
+    }
+    @IBAction func lesserThanTapped(_ sender: Any) {
+        viewModel.sortLesser()
+        array = viewModel.filteredList
+        tableView.reloadData()
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         CommonUtils.sharedInstance.showActivityIndicator(self.view)
         viewModel.getProducts()
+        applyTheme()
+    }
+    
+    func applyTheme(){
+        self.lesserBtn.layer.cornerRadius = 10
+        self.greaterBtn.layer.cornerRadius = 10
+    }
+    
+    @IBAction func cartBtnTapped(_ sender: Any) {
+        guard let vc = storyboard?.instantiateViewController(identifier: "CartViewController") as? CartViewController else { return }
+        
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func registerViewModelListeners() {
@@ -32,7 +61,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if success {
                 //Hidingh activity indicator after fetching the list
                 CommonUtils.sharedInstance.hideActivityIndicator()
-                
+                array = viewModel.productList
                 //reload table view after fethcing data
                 self.tableView.reloadData()
                 
@@ -44,16 +73,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.productList?.count ?? 0
+        return array?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as? ProductTableViewCell?  else { return UITableViewCell() }
-            cell?.nameLabel.text = viewModel.productList?[indexPath.row].name
-        cell?.priceLabel.text = "₹" + (viewModel.productList?[indexPath.row].price)!
-        cell?.ratingLabel.text = "Rating: " + String((viewModel.productList?[indexPath.row].rating)!)
+            cell?.nameLabel.text = array?[indexPath.row].name
+        cell?.priceLabel.text = "₹" + (array?[indexPath.row].price)!
+        cell?.ratingLabel.text = "Rating: " + String((array?[indexPath.row].rating)!)
             
-            if let imageUrlString = viewModel.productList?[indexPath.row].image_url {
+            if let imageUrlString = array?[indexPath.row].image_url {
                 DispatchQueue.global().async {
                     guard let imageUrl = URL(string: imageUrlString) else { return }
                     if let data = try? Data(contentsOf: imageUrl) {
@@ -65,9 +94,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     }
                 }
             }
-//            else {
-//                return UITableViewCell()
-//            }
+        
+        //set button action
+        cell?.addProductActionType {
+            self.save(name:  self.array?[indexPath.row].name, image_url: self.array?[indexPath.row].image_url, rating: String((self.array?[indexPath.row].rating)!))
+        }
        
         return cell ?? UITableViewCell()
     }
@@ -76,18 +107,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return UITableView.automaticDimension
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        guard let vc = storyboard?.instantiateViewController(identifier: "UserDetailsViewController") as? UserDetailsViewController else { return }
-//
-//        guard let selectedRow = tableView.indexPathForSelectedRow?.row else { return }
-//        vc.fname = viewModel.userList?[selectedRow].first_name
-//        vc.lname = viewModel.userList?[selectedRow].last_name
-//        vc.email = viewModel.userList?[selectedRow].email
-//        vc.image = viewModel.userList?[selectedRow].avatar
-//
-//        navigationController?.pushViewController(vc, animated: true)
+    func save(name: String?, image_url: String?, rating: String?) {
+        
+        let model = Product()
+        model.name = name
+        model.image_url = image_url
+        model.rating = Int(rating!)
+        
+        //Add data to database
+        RealmManager.sharedManager.addObjects(model)
+        
     }
-
-
+    
 }
-
