@@ -48,6 +48,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func applyTheme(){
         self.lesserBtn.layer.cornerRadius = 10
         self.greaterBtn.layer.cornerRadius = 10
+        self.tableView.separatorStyle = .none
     }
     
     @IBAction func cartBtnTapped(_ sender: Any) {
@@ -97,7 +98,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         //set button action
         cell?.addProductActionType {
-            self.save(name:  self.array?[indexPath.row].name, image_url: self.array?[indexPath.row].image_url, rating: String((self.array?[indexPath.row].rating)!))
+            self.save(name:  self.array?[indexPath.row].name, image_url: self.array?[indexPath.row].image_url, rating: (self.array?[indexPath.row].rating), price: self.array?[indexPath.row].price)
         }
        
         return cell ?? UITableViewCell()
@@ -107,13 +108,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return UITableView.automaticDimension
     }
     
-    func save(name: String?, image_url: String?, rating: String?) {
+    func save(name: String?, image_url: String?, rating: Int?, price: String?) {
         
         let model = Product()
         model.name = name
         model.image_url = image_url
-        model.rating = Int(rating!)
-        
+        model.price = price
+        if let rate = rating {
+        model.rating = Int(rate) ?? 0
+        }
         //Add data to database
         RealmManager.sharedManager.addObjects(model)
         

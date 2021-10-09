@@ -21,4 +21,10 @@ class RealmManager: NSObject {
         
     }
     
+    func deleteObjects() {
+        try! self.realmDB.write {
+        self.realmDB.deleteAll()
+        }
+    }
+    
 }

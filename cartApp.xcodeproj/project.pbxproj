@@ -30,6 +30,7 @@
 		63B3EDB8270F2FDA0053D993 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 63B3EDB7270F2FDA0053D993 /* Realm */; };
 		63B3EDBA270F2FDA0053D993 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 63B3EDB9270F2FDA0053D993 /* RealmSwift */; };
 		63B3EDBC270F2FFF0053D993 /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B3EDBB270F2FFF0053D993 /* RealmManager.swift */; };
+		63D887A427117115000438B6 /* OrderConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D887A327117115000438B6 /* OrderConfirmationViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +78,7 @@
 		638ED6A8270DF24D004DF6F0 /* Dynamic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dynamic.swift; sourceTree = "<group>"; };
 		63B3EDB1270F19820053D993 /* CartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
 		63B3EDBB270F2FFF0053D993 /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
+		63D887A327117115000438B6 /* OrderConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderConfirmationViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +178,7 @@
 			children = (
 				638ED65B270DE4D3004DF6F0 /* ViewController.swift */,
 				63B3EDB1270F19820053D993 /* CartViewController.swift */,
+				63D887A327117115000438B6 /* OrderConfirmationViewController.swift */,
 				638ED65D270DE4D3004DF6F0 /* Main.storyboard */,
 				638ED6A1270DEFEC004DF6F0 /* CustomViews */,
 			);
@@ -377,6 +380,7 @@
 				638ED6A0270DE906004DF6F0 /* Constants.swift in Sources */,
 				63B3EDBC270F2FFF0053D993 /* RealmManager.swift in Sources */,
 				638ED693270DE636004DF6F0 /* NetworkService.swift in Sources */,
+				63D887A427117115000438B6 /* OrderConfirmationViewController.swift in Sources */,
 				638ED6A9270DF24D004DF6F0 /* Dynamic.swift in Sources */,
 				638ED69A270DE7EB004DF6F0 /* FetchProductStore.swift in Sources */,
 				638ED65C270DE4D3004DF6F0 /* ViewController.swift in Sources */,

@@ -12,6 +12,8 @@ import RealmSwift
 
 class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    @IBOutlet weak var noItemsLabel: UILabel!
+    @IBOutlet weak var checkoutButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     var products : [Product]?
     var realmDB = try! Realm()
@@ -21,12 +23,29 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         //Register table view cells.
         tableView.register(UINib(nibName: "ProductTableViewCell", bundle: nil), forCellReuseIdentifier: "Cell")
         
-        
+        tableView.separatorStyle = .none
+        self.checkoutButton.layer.cornerRadius = 10
+        self.noItemsLabel.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.fetchObjects()
+        CommonUtils.sharedInstance.showActivityIndicator(self.view)
+        self.tableView.isHidden = true
+        self.checkoutButton.isHidden = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+            CommonUtils.sharedInstance.hideActivityIndicator()
+            self.tableView.isHidden = false
+            self.checkoutButton.isHidden = false
+            
+            if (self.products?.count == 0) {
+                self.tableView.isHidden = true
+                self.checkoutButton.isHidden = true
+                self.noItemsLabel.isHidden = false
+            }
+        }
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -37,7 +56,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as? ProductTableViewCell?  else { return UITableViewCell() }
         cell?.nameLabel.text = products?[indexPath.row].name
         cell?.priceLabel.text = "₹" + (products?[indexPath.row].price)!
-        cell?.ratingLabel.text = "Rating: " + String((products?[indexPath.row].rating)!)
+        cell?.addToCart.isHidden = true
 
             if let imageUrlString = products?[indexPath.row].image_url {
                 DispatchQueue.global().async {
@@ -59,16 +78,13 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func fetchObjects()  {
-        
-        let prods = realmDB.objects(Product.self)
-                
-        if(!prods.isEmpty)
-        {
-            for n in prods
-            {
-                self.products?.append(n)
-            }
-        }
+        let prods = Array(realmDB.objects(Product.self))
+        self.products = prods
     }
     
+    @IBAction func checkoutTapped(_ sender: Any) {
+        guard let vc = storyboard?.instantiateViewController(identifier: "OrderConfirmationViewController") as? OrderConfirmationViewController else { return }
+        
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
