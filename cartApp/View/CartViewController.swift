@@ -11,7 +11,7 @@ import Realm
 import RealmSwift
 
 class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     @IBOutlet weak var noItemsLabel: UILabel!
     @IBOutlet weak var checkoutButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
@@ -34,12 +34,13 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         CommonUtils.sharedInstance.showActivityIndicator(self.view)
         self.tableView.isHidden = true
         self.checkoutButton.isHidden = true
-
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             CommonUtils.sharedInstance.hideActivityIndicator()
             self.tableView.isHidden = false
             self.checkoutButton.isHidden = false
             
+            //If products are empty display no products label.
             if (self.products?.count == 0) {
                 self.tableView.isHidden = true
                 self.checkoutButton.isHidden = true
@@ -47,7 +48,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
         }
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return products?.count ?? 0
     }
@@ -57,19 +58,19 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell?.nameLabel.text = products?[indexPath.row].name
         cell?.priceLabel.text = "₹" + (products?[indexPath.row].price)!
         cell?.addToCart.isHidden = true
-
-            if let imageUrlString = products?[indexPath.row].image_url {
-                DispatchQueue.global().async {
-                    guard let imageUrl = URL(string: imageUrlString) else { return }
-                    if let data = try? Data(contentsOf: imageUrl) {
-                        if let image = UIImage(data: data) {
-                            DispatchQueue.main.async {
-                                cell?.imgView?.image = image
-                            }
+        
+        if let imageUrlString = products?[indexPath.row].image_url {
+            DispatchQueue.global().async {
+                guard let imageUrl = URL(string: imageUrlString) else { return }
+                if let data = try? Data(contentsOf: imageUrl) {
+                    if let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            cell?.imgView?.image = image
                         }
                     }
                 }
-            }       
+            }
+        }
         return cell ?? UITableViewCell()
     }
     
@@ -77,6 +78,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         return UITableView.automaticDimension
     }
     
+    ///This function fetched data from the RealmDB.
     func fetchObjects()  {
         let prods = Array(realmDB.objects(Product.self))
         self.products = prods

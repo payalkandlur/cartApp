@@ -11,7 +11,7 @@ import Realm
 import RealmSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var greaterBtn: UIButton!
     @IBOutlet weak var lesserBtn: UIButton!
@@ -45,6 +45,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         applyTheme()
     }
     
+    ///This funtcion applies the UI stylings to the UI elements.
     func applyTheme(){
         self.lesserBtn.layer.cornerRadius = 10
         self.greaterBtn.layer.cornerRadius = 10
@@ -68,39 +69,39 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 
             } else {
                 CommonUtils.sharedInstance.hideActivityIndicator()
-                CommonUtils.sharedInstance.showAlert(header: ErrorConstants.defaultErrorHeader, message: StringConstants.textFieldValidation, actionTitle: StringConstants.alertOK)
+                CommonUtils.sharedInstance.showAlert(header: ErrorConstants.defaultErrorHeader, message: ErrorConstants.defaultError, actionTitle: StringConstants.alertOK)
             }
         }
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return array?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as? ProductTableViewCell?  else { return UITableViewCell() }
-            cell?.nameLabel.text = array?[indexPath.row].name
+        cell?.nameLabel.text = array?[indexPath.row].name
         cell?.priceLabel.text = "₹" + (array?[indexPath.row].price)!
         cell?.ratingLabel.text = "Rating: " + String((array?[indexPath.row].rating)!)
-            
-            if let imageUrlString = array?[indexPath.row].image_url {
-                DispatchQueue.global().async {
-                    guard let imageUrl = URL(string: imageUrlString) else { return }
-                    if let data = try? Data(contentsOf: imageUrl) {
-                        if let image = UIImage(data: data) {
-                            DispatchQueue.main.async {
-                                cell?.imgView?.image = image
-                            }
+        
+        if let imageUrlString = array?[indexPath.row].image_url {
+            DispatchQueue.global().async {
+                guard let imageUrl = URL(string: imageUrlString) else { return }
+                if let data = try? Data(contentsOf: imageUrl) {
+                    if let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            cell?.imgView?.image = image
                         }
                     }
                 }
             }
+        }
         
         //set button action
         cell?.addProductActionType {
             self.save(name:  self.array?[indexPath.row].name, image_url: self.array?[indexPath.row].image_url, rating: (self.array?[indexPath.row].rating), price: self.array?[indexPath.row].price)
         }
-       
+        
         return cell ?? UITableViewCell()
     }
     
@@ -108,6 +109,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return UITableView.automaticDimension
     }
     
+    ///This function saves the data to the RealmDB
     func save(name: String?, image_url: String?, rating: Int?, price: String?) {
         
         let model = Product()
@@ -115,7 +117,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         model.image_url = image_url
         model.price = price
         if let rate = rating {
-        model.rating = Int(rate) ?? 0
+            model.rating = Int(rate)
         }
         //Add data to database
         RealmManager.sharedManager.addObjects(model)

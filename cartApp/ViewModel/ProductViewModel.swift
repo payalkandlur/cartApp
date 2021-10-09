@@ -16,7 +16,7 @@ class ProductViewModel {
     var errorMessage = ""
     
     //MARK: Get the user details
-    /// This function will get the products from the backend.
+    ///This function will get the products from the backend.
     func getProducts() {
         productManager.getProducts { [weak self]
             (result, error)  in
@@ -32,10 +32,13 @@ class ProductViewModel {
         }
     }
     
-    
+    //MARK: Logic
+    ///This function will filter the products greater than 1000.
     func sortGreater() {
         self.filteredList = productList?.filter({Int($0.price!)! > 1000})
     }
+    
+    ///This function will filter the products lesser than 1000.
     func sortLesser() {
         self.filteredList = productList?.filter({Int($0.price!)! < 1000})
     }

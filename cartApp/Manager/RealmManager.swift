@@ -14,6 +14,7 @@ class RealmManager: NSObject {
     
     var realmDB = try! Realm()
     
+    ///This function adds the data to the Realm database.
     func addObjects(_ model: Product) {
         try! self.realmDB.write {
             self.realmDB.add(model)
@@ -21,9 +22,10 @@ class RealmManager: NSObject {
         
     }
     
+    ///This function deletes the data to the Realm database.
     func deleteObjects() {
         try! self.realmDB.write {
-        self.realmDB.deleteAll()
+            self.realmDB.deleteAll()
         }
     }
     

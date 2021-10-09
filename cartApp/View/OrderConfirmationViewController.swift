@@ -8,12 +8,12 @@
 import UIKit
 
 class OrderConfirmationViewController: UIViewController {
-
+    
     @IBOutlet weak var continueBtn: UIButton!
     @IBOutlet weak var confirmedLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
     }
     
@@ -24,8 +24,9 @@ class OrderConfirmationViewController: UIViewController {
         CommonUtils.sharedInstance.showActivityIndicator(self.view)
         self.confirmedLabel.isHidden = true
         self.continueBtn.isHidden = true
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+        
+        ///Hide the Activity Indicator after 10 seconds.
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             CommonUtils.sharedInstance.hideActivityIndicator()
             self.confirmedLabel.isHidden = false
             self.continueBtn.isHidden = false
@@ -37,7 +38,7 @@ class OrderConfirmationViewController: UIViewController {
         super.viewWillDisappear(animated)
         self.navigationController?.navigationBar.isHidden = false
     }
-
+    
     @IBAction func continueTapped(_ sender: Any) {
         self.navigationController?.popToRootViewController(animated: true)
     }
